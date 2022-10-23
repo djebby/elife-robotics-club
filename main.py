@@ -16,7 +16,7 @@ frequency = 15000
 
 station = WLAN(STA_IF)
 station.active(True)
-station.ifconfig(('192.168.43.100', '255.255.255.0', '192.168.43.1', '192.168.43.1'))
+#station.ifconfig(('192.168.43.100', '255.255.255.0', '192.168.43.1', '192.168.43.1'))
 station.connect(ssid, password)
 
 while station.isconnected() == False:
@@ -41,13 +41,6 @@ dc_motor02 = DCMotor(pin5, pin6, enable)
 s = socket(AF_INET,SOCK_STREAM)
 s.bind(('', 80))
 s.listen(5) 
-
-# def avancer (a,b,c,d):
-#     m11.value(a)
-#     m12.value(b)
-#     m21.value(c)
-#     m22.value(d)
-
 
 
 
