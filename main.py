@@ -4,10 +4,14 @@ from socket import *
 from machine import Pin, PWM
 from dcmotor import DCMotor
 from time import sleep
+from hcsr04 import HCSR04
 import esp
 esp.osdebug(None)
 import gc
 gc.collect()
+frontSensor = HCSR04(trigger_pin=25, echo_pin=26)
+rightSensor = HCSR04(trigger_pin=12, echo_pin=14)
+leftSensor = HCSR04(trigger_pin=33, echo_pin=32)
 
 
 ssid = 'Guest'
@@ -29,13 +33,13 @@ auto=False
 enable = PWM(Pin(13), frequency)
 
 
-pin3 = Pin(18, Pin.OUT)
-pin4 = Pin(19, Pin.OUT)
+pin3 = Pin(19, Pin.OUT)
+pin4 = Pin(18, Pin.OUT)
 dc_motor01 = DCMotor(pin3, pin4, enable)
 
 
-pin5 = Pin(22, Pin.OUT)
-pin6 = Pin(23, Pin.OUT)
+pin5 = Pin(23, Pin.OUT)
+pin6 = Pin(22, Pin.OUT)
 dc_motor02 = DCMotor(pin5, pin6, enable)
 
 s = socket(AF_INET,SOCK_STREAM)
@@ -45,11 +49,33 @@ s.listen(5)
 
 
 def eviteur():
-    print('a')
     while True :
         if auto:
-            print('eviteur')
-            sleep(1)
+            distance1 = frontSensor.distance_cm()
+            distance2 = rightSensor.distance_cm()
+            distance3 = leftSensor.distance_cm()
+            if (0<distance1<25) or (0<distance2<10) or (0<distance3<10) :
+                dc_motor01.stop()
+                dc_motor02.stop()
+                dc_motor01.backwards(2)
+                dc_motor02.backwards(2)
+                sleep(0.5)
+                distance2 = rightSensor.distance_cm()
+                distance3 = leftSensor.distance_cm()
+                if distance2>20:
+                    dc_motor01.backwards(2)
+                    dc_motor02.forward(2)
+                    sleep(0.7)
+                elif distance3>20:
+                    dc_motor02.backwards(2) 
+                    dc_motor01.forward(2)
+                    sleep(0.7)
+                    
+            else:
+                dc_motor01.forward(2.5)
+                dc_motor02.forward(2.5)
+            sleep(0.07)
+           
 
 
 def web():
@@ -62,10 +88,11 @@ def web():
         print(request[:20])
         if request.find('/?mode=auto')==6:
             auto=True
-            print('auto')
            
         elif request.find('/?mode=manuel')==6:
             auto=False
+            dc_motor01.stop()
+            dc_motor02.stop()
             
         elif request.find('/?pompe=on')==6:
             print('pompe on')
@@ -74,20 +101,20 @@ def web():
             print('pompe off')
         
         elif request.find('/?dir=back')==6:
-            dc_motor01.backwards(50)
-            dc_motor02.backwards(50)
+            dc_motor01.backwards(2)
+            dc_motor02.backwards(2)
 
         elif request.find('/?dir=forward')==6:
-            dc_motor01.forward(50)
-            dc_motor02.forward(50)
+            dc_motor01.forward(2.5)
+            dc_motor02.forward(2.5)
 
         elif request.find('/?dir=right')==6:
-            dc_motor01.forward(50)
-            dc_motor02.backwards(50)
+            dc_motor01.forward(2)
+            dc_motor02.backwards(2)
 
         elif request.find('/?dir=left')==6:
-            dc_motor01.forward(50)
-            dc_motor02.backwards(50)
+            dc_motor02.forward(2)
+            dc_motor01.backwards(2)
 
         elif request.find('/?dir=stop')==6:
             dc_motor01.stop()
