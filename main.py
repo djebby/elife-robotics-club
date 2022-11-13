@@ -6,6 +6,8 @@ from dcmotor import DCMotor
 from time import sleep
 from hcsr04 import HCSR04
 import esp
+from servo import Servo
+
 esp.osdebug(None)
 import gc
 gc.collect()
@@ -32,6 +34,8 @@ auto=False
 
 enable = PWM(Pin(13), frequency)
 
+servoMotor = Servo(Pin(2))
+servoMotor.write_angle(90)
 
 pin3 = Pin(19, Pin.OUT)
 pin4 = Pin(18, Pin.OUT)
@@ -80,7 +84,6 @@ def eviteur():
 
 def web():
     global auto
-
     while True:
         conn,addr =s.accept()
         request =conn.recv(1024)
@@ -119,6 +122,12 @@ def web():
         elif request.find('/?dir=stop')==6:
             dc_motor01.stop()
             dc_motor02.stop()
+        elif request.find('/?servo=on') == 6:
+            servoMotor.write_angle(77)
+        elif request.find('/?servo=off') == 6:
+            servoMotor.write_angle(90)
+        
+
 
         conn.send('HTTP/1.1 200 OK\n')
         conn.send('Content-Type: text/html\n')
