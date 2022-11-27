@@ -6,7 +6,7 @@ from dcmotor import DCMotor
 from time import sleep
 from hcsr04 import HCSR04
 import esp
-from servo import Servo
+#from servo import Servo
 
 esp.osdebug(None)
 import gc
@@ -14,6 +14,7 @@ gc.collect()
 frontSensor = HCSR04(trigger_pin=25, echo_pin=26)
 rightSensor = HCSR04(trigger_pin=12, echo_pin=14)
 leftSensor = HCSR04(trigger_pin=33, echo_pin=32)
+
 
 
 ssid = 'Guest'
@@ -34,8 +35,8 @@ auto=False
 
 enable = PWM(Pin(13), frequency)
 
-servoMotor = Servo(Pin(2))
-servoMotor.write_angle(90)
+# servoMotor = PWM(Pin(2), freq=50) 
+# servoMotor.duty(90)
 
 pin3 = Pin(19, Pin.OUT)
 pin4 = Pin(18, Pin.OUT)
@@ -122,10 +123,11 @@ def web():
         elif request.find('/?dir=stop')==6:
             dc_motor01.stop()
             dc_motor02.stop()
-        elif request.find('/?servo=on') == 6:
-            servoMotor.write_angle(77)
-        elif request.find('/?servo=off') == 6:
-            servoMotor.write_angle(90)
+            
+        #elif request.find('/?servo=on') == 6:
+        #    servoMotor.duty(70)
+        #elif request.find('/?servo=off') == 6:
+        #    servoMotor.duty(90)
         
 
 
