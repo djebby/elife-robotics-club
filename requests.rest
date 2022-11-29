@@ -1,0 +1,16 @@
+
+GET http://10.2.40.41/?servo=on
+###
+GET http://10.2.40.41/?servo=off
+
+
+###
+GET http://10.2.40.41/?dir=forward
+###
+GET http://10.2.40.41/?dir=stop
+
+###
+GET http://10.2.40.41/?pompe=on
+
+###
+GET http://10.2.40.41/?pompe=off

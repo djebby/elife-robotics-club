@@ -35,8 +35,6 @@ auto=False
 
 enable = PWM(Pin(13), frequency)
 
-# servoMotor = PWM(Pin(2), freq=50) 
-# servoMotor.duty(90)
 
 pin3 = Pin(19, Pin.OUT)
 pin4 = Pin(18, Pin.OUT)
@@ -46,6 +44,11 @@ dc_motor01 = DCMotor(pin3, pin4, enable)
 pin5 = Pin(23, Pin.OUT)
 pin6 = Pin(22, Pin.OUT)
 dc_motor02 = DCMotor(pin5, pin6, enable)
+
+cleanerMotor = Pin(2, Pin.OUT)
+pompeMotor = Pin(4, Pin.OUT)
+cleanerMotor.value(0)
+pompeMotor.value(0)
 
 s = socket(AF_INET,SOCK_STREAM)
 s.bind(('', 80))
@@ -99,10 +102,10 @@ def web():
             dc_motor02.stop()
             
         elif request.find('/?pompe=on')==6:
-            print('pompe on')
+            pompeMotor.value(1)
 
         elif request.find('/?pompe=off')==6:
-            print('pompe off')
+            pompeMotor.value(0)
         
         elif request.find('/?dir=back')==6:
             dc_motor01.backwards(2)
@@ -123,14 +126,18 @@ def web():
         elif request.find('/?dir=stop')==6:
             dc_motor01.stop()
             dc_motor02.stop()
+        
+        elif request.find('/?servo=on') == 6:
+            cleanerMotor.value(1)
+        elif request.find('/?servo=off') == 6:
+            cleanerMotor.value(0)
             
         #elif request.find('/?servo=on') == 6:
         #    servoMotor.duty(70)
         #elif request.find('/?servo=off') == 6:
         #    servoMotor.duty(90)
         
-
-
+        
         conn.send('HTTP/1.1 200 OK\n')
         conn.send('Content-Type: text/html\n')
         conn.send('Connection: close\n\n')
