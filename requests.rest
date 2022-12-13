@@ -1,16 +1,16 @@
 
-GET http://10.2.40.41/?servo=on
+GET http://10.2.40.208/?servo=on
 ###
-GET http://10.2.40.41/?servo=off
+GET http://10.2.40.208/?servo=off
 
 
 ###
-GET http://10.2.40.41/?dir=forward
+GET http://10.2.40.208/?dir=forward
 ###
-GET http://10.2.40.41/?dir=stop
+GET http://10.2.40.208/?dir=stop
 
 ###
-GET http://10.2.40.41/?pompe=on
+GET http://10.2.40.208/?pompe=on
 
 ###
-GET http://10.2.40.41/?pompe=off
+GET http://10.2.40.208/?pompe=off

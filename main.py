@@ -47,8 +47,8 @@ dc_motor02 = DCMotor(pin5, pin6, enable)
 
 cleanerMotor = Pin(2, Pin.OUT)
 pompeMotor = Pin(4, Pin.OUT)
-cleanerMotor.value(0)
-pompeMotor.value(0)
+cleanerMotor.value(1)
+pompeMotor.value(1)
 
 s = socket(AF_INET,SOCK_STREAM)
 s.bind(('', 80))
@@ -67,17 +67,17 @@ def eviteur():
                 dc_motor02.stop()
                 dc_motor01.backwards(2)
                 dc_motor02.backwards(2)
-                sleep(0.5)
+                sleep(1)
                 distance2 = rightSensor.distance_cm()
                 distance3 = leftSensor.distance_cm()
                 if distance2>20:
                     dc_motor01.backwards(2)
                     dc_motor02.forward(2)
-                    sleep(0.7)
+                    sleep(1.5)
                 elif distance3>20:
                     dc_motor02.backwards(2) 
                     dc_motor01.forward(2)
-                    sleep(0.7)
+                    sleep(1.5)
                     
             else:
                 dc_motor01.forward(2.5)
@@ -102,10 +102,10 @@ def web():
             dc_motor02.stop()
             
         elif request.find('/?pompe=on')==6:
-            pompeMotor.value(1)
+            pompeMotor.value(0)
 
         elif request.find('/?pompe=off')==6:
-            pompeMotor.value(0)
+            pompeMotor.value(1)
         
         elif request.find('/?dir=back')==6:
             dc_motor01.backwards(2)
@@ -128,9 +128,9 @@ def web():
             dc_motor02.stop()
         
         elif request.find('/?servo=on') == 6:
-            cleanerMotor.value(1)
-        elif request.find('/?servo=off') == 6:
             cleanerMotor.value(0)
+        elif request.find('/?servo=off') == 6:
+            cleanerMotor.value(1)
             
         #elif request.find('/?servo=on') == 6:
         #    servoMotor.duty(70)
