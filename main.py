@@ -15,6 +15,10 @@ frontSensor = HCSR04(trigger_pin=25, echo_pin=26)
 rightSensor = HCSR04(trigger_pin=12, echo_pin=14)
 leftSensor = HCSR04(trigger_pin=33, echo_pin=32)
 
+cleanerMotor = Pin(2, Pin.OUT)
+pompeMotor = Pin(4, Pin.OUT)
+cleanerMotor.value(1)
+pompeMotor.value(1)
 
 
 ssid = 'Guest'
@@ -23,7 +27,7 @@ frequency = 15000
 
 station = WLAN(STA_IF)
 station.active(True)
-#station.ifconfig(('192.168.43.100', '255.255.255.0', '192.168.43.1', '192.168.43.1'))
+station.ifconfig(('10.2.40.41', '255.255.255.0', '10.2.40.254', '8.8.8.8'))
 station.connect(ssid, password)
 
 while station.isconnected() == False:
@@ -45,14 +49,10 @@ pin5 = Pin(23, Pin.OUT)
 pin6 = Pin(22, Pin.OUT)
 dc_motor02 = DCMotor(pin5, pin6, enable)
 
-cleanerMotor = Pin(2, Pin.OUT)
-pompeMotor = Pin(4, Pin.OUT)
-cleanerMotor.value(1)
-pompeMotor.value(1)
 
 s = socket(AF_INET,SOCK_STREAM)
 s.bind(('', 80))
-s.listen(5) 
+s.listen(5)
 
 
 
@@ -132,10 +132,6 @@ def web():
         elif request.find('/?servo=off') == 6:
             cleanerMotor.value(1)
             
-        #elif request.find('/?servo=on') == 6:
-        #    servoMotor.duty(70)
-        #elif request.find('/?servo=off') == 6:
-        #    servoMotor.duty(90)
         
         
         conn.send('HTTP/1.1 200 OK\n')
